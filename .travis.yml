@@ -1,12 +1,16 @@
 language: node_js
 node_js:
-  - stable
+- stable
 services:
-  - postgresql
+- postgresql
 before_script:
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-  - ./cc-test-reporter before-build
-script: 
-  - npm run test;
-
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
+  > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
+- "./cc-test-reporter before-build"
+script:
+- npm run test;
+env:
+  global:
+  - secure: QKD6gKidKq2bObHJk69sB4VXNbewGvbzVC9LkIuC9xTaaW5lfMt6gJCM7Wlnt6REXK+f1Oo8+mTUm3e0mCZpQL4dlOIj8D8aSWrj8xWQ4oJoapEaWlHQ9N8kqWcbgvOnH3jLFswSy9aGhCBaAJwBRkVvR7EQkI9kg26Wf1aNbzdcBTUgvLQMQhBRp/SUZ5bygIg5LeBdoBB6nQlAlJGUtlB7P00HT7m7HL3lufmz11q0Sezt3Hvh7X60cOm2yoGxB2/EJfPuqKvyb4eo21NgTOZKEaN55dUKCgJmFg/+s4XHAIGywDa0ecJ4XlAiDvnVn/sNZKPvz6L00wDrNDPOAkZ/IdWXsphQNmWwcY2PAiQKVDnYdaERsp7QwFtzZI53f8ND5t6x4E0rM88PrQRNcjUrtS4gQmVpdQiX9pae4rJilTDvxan0Pt5HdvvGoATmT+u+6lFQtN5OVfIT22UjpN0+8q5bA7ZlnYToapqANHEW6cs67Gy8pOQfq+YGfE5aw5DaVu7qzvcFrgLtY39ctv6RKpK9z3selkNu+/ATPmnXqPdHQKmVniRXkveqsPoLU9vv/gRkz2WpNB4b8X+XFix5938XkZMLgwxyjpRVYbA0xxMZUflpLut8RBd56HyGeE+QIay4HPS+NXsR/bX693l3Tah3Z+VTvkgfGcHUB/Q=
+  - secure: i8QKDVXrDjjnnb+tsvvw4SvP61VBYfSn33dzFrSvGfK9iDyMwAswHkzeo4X89J0NKPzLnJinAwSAYp8ZDNlKzAETnx0Bpot/6eF/BCtJxGoO1G8uqie2K64yK8vXbjli7sM/UHerawadCqdYxId7aIGVgmOj5VMQCI5VQqRQ1GOfk++xbin1MIFNpTpdLbKcO2eRQmx1xJV3nmmfkMafiP+6kP4YxPeZMmUgbbqDQiDszHgq5fiQLXKFzchxguE9J8DRTwYoY0nxaFoHYTUiHY9je0IAd1sCmZum0auS4uVJ0n8cckYF9Bbyo931JO2Vo6LEGA4YconqESrN4RM5GLWzobFO4o+cxuRNFAGA7wRcYtzizk81GzKmI2JV/rz9b+hqof4bso0s5wY1uUh7TnGFTU9R6BZ04cLgryJ3O5Z1wXjJEz/pMAtm2Uj88LBn8BH3tfN8t+MySf6xSLV58/B+zICnd52mIRsbs26tcuvPPwrWTqnGRpIGqEGPTREhN0eHBt/MyYoK8DLFbhbobPa2yRCvyYra2W3q3hAExeiJmKLPQY9gnM+JPRoXxDaV8swgFN2ZUu8q27k584QI6ZtTygeCjPLV9ykkoVzMNg1NOdpKptgZTn+rc8rbUOzPTAbufsOX646GOJOe31aRZk9AvcXo6wqtDG1MMYDaoMY=
