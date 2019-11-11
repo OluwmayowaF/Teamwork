@@ -10,6 +10,10 @@ const { expect } = chai;
 chai.use(chaiHttp);
 
 describe('Teamwork API test', () => {
+  after((done) => {
+    console.log('End of Tests');
+    done();
+  });
   it('Should welcome users to the api', (done) => {
     chai
       .request(app)
