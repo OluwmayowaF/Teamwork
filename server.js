@@ -5,7 +5,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 
 const app = express();
-const router = express.Router(); // Setup express router
+// const router = express.Router(); // Setup express router
 
 const environment = process.env.NODE_ENV; // development
 const stage = require('./config')[environment];
@@ -19,11 +19,11 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
-app.user('/api/v1', (req, res) => {
+app.use('/api/v1', (req, res) => {
   res.json(
     {
       status: 'success',
-      message: 'Welcome to Team Work Testing API'
+      message: 'Welcome to Teamwork API Test',
     },
   );
 });
