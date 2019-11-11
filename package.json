@@ -1,0 +1,26 @@
+{
+  "name": "teamwork-api",
+  "version": "1.0.0",
+  "description": "Restful API for Teamwork an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OluwmayowaF/Teamwork.git"
+  },
+  "keywords": [
+    "NODEJS",
+    "EXPRESS",
+    "CLOUDINARY",
+    "POSTGRES",
+    "JWT"
+  ],
+  "author": "Oluwamayowa Fadairo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OluwmayowaF/Teamwork/issues"
+  },
+  "homepage": "https://github.com/OluwmayowaF/Teamwork#readme"
+}
