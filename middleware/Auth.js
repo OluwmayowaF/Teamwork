@@ -28,9 +28,11 @@ module.exports = {
       } catch (err) {
         throw new Error(err);
       }
-    } return res.status(401).json({
-      error: 'Authorization Token not found',
-      status: 401,
-    });
+    } else {
+      return res.status(401).json({
+        error: 'Authorization Token not found',
+        status: 401,
+      });
+    }
   },
 };
