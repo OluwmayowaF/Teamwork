@@ -1,35 +1,35 @@
 {
-  "name": "teamwork-api",
-  "version": "1.0.0",
-  "description": "Restful API for Teamwork an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/OluwmayowaF/Teamwork.git"
-  },
-  "keywords": [
-    "NODEJS",
-    "EXPRESS",
-    "CLOUDINARY",
-    "POSTGRES",
-    "JWT"
-  ],
-  "author": "Oluwamayowa Fadairo",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/OluwmayowaF/Teamwork/issues"
-  },
-  "homepage": "https://github.com/OluwmayowaF/Teamwork#readme",
-  "dependencies": {
-    "body-parser": "^1.19.0",
-    "cross-env": "^6.0.3",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "make-runnable": "^1.3.6",
-    "morgan": "^1.9.1",
-    "nodemon": "^1.19.4"
-  }
+    "name": "teamwork-api",
+    "version": "1.0.0",
+    "description": "Restful API for Teamwork an internal social network for employees of an organization. The goal of this application is to facilitate more interaction between colleagues and promote team bonding.",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/OluwmayowaF/Teamwork.git"
+    },
+    "keywords": [
+        "NODEJS",
+        "EXPRESS",
+        "CLOUDINARY",
+        "POSTGRES",
+        "JWT"
+    ],
+    "author": "Oluwamayowa Fadairo",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/OluwmayowaF/Teamwork/issues"
+    },
+    "homepage": "https://github.com/OluwmayowaF/Teamwork#readme",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "cross-env": "^6.0.3",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "make-runnable": "^1.3.6",
+        "morgan": "^1.9.1",
+        "nodemon": "^1.19.4"
+    }
 }
