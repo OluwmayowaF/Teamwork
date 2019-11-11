@@ -3,6 +3,7 @@ module.exports = {
     commonjs: true,
     es6: true,
     node: true,
+    mocha: true,
   },
   extends: [
     'airbnb-base',
@@ -15,5 +16,11 @@ module.exports = {
     ecmaVersion: 2018,
   },
   rules: {
+    'no-unused-vars': [
+      'error',
+      {
+        'varsIgnorePattern': 'should|expect'
+      }
+    ]
   },
 };
