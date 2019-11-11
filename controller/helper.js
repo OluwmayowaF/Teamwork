@@ -40,6 +40,16 @@ const Helper = {
   comparePassword(hashPassword, password) {
     return bcrypt.compareSync(password, hashPassword);
   },
+
+  /**
+   * validateEmail
+   * @param {string} email
+   * @returns {Boolean} return True or False
+   */
+
+  validateEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+  },
 };
 
 module.exports = Helper;

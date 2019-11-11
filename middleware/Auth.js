@@ -35,7 +35,7 @@ module.exports = {
       }
     } else {
       result = {
-        error: 'Authentication error. Token required.',
+        error: 'Authorization Token not found',
         status: 401,
       };
       return res.status(401).send(result);
