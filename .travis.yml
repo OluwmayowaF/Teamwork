@@ -4,12 +4,14 @@ node_js:
 services:
 - postgresql
 before_script:
-- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-  > ./cc-test-reporter
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64> ./cc-test-reporter
 - chmod +x ./cc-test-reporter
 - "./cc-test-reporter before-build"
 script:
 - npm run test;
+after_success:
+  - npm run coverage 
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 env:
   global:
   - secure: QKD6gKidKq2bObHJk69sB4VXNbewGvbzVC9LkIuC9xTaaW5lfMt6gJCM7Wlnt6REXK+f1Oo8+mTUm3e0mCZpQL4dlOIj8D8aSWrj8xWQ4oJoapEaWlHQ9N8kqWcbgvOnH3jLFswSy9aGhCBaAJwBRkVvR7EQkI9kg26Wf1aNbzdcBTUgvLQMQhBRp/SUZ5bygIg5LeBdoBB6nQlAlJGUtlB7P00HT7m7HL3lufmz11q0Sezt3Hvh7X60cOm2yoGxB2/EJfPuqKvyb4eo21NgTOZKEaN55dUKCgJmFg/+s4XHAIGywDa0ecJ4XlAiDvnVn/sNZKPvz6L00wDrNDPOAkZ/IdWXsphQNmWwcY2PAiQKVDnYdaERsp7QwFtzZI53f8ND5t6x4E0rM88PrQRNcjUrtS4gQmVpdQiX9pae4rJilTDvxan0Pt5HdvvGoATmT+u+6lFQtN5OVfIT22UjpN0+8q5bA7ZlnYToapqANHEW6cs67Gy8pOQfq+YGfE5aw5DaVu7qzvcFrgLtY39ctv6RKpK9z3selkNu+/ATPmnXqPdHQKmVniRXkveqsPoLU9vv/gRkz2WpNB4b8X+XFix5938XkZMLgwxyjpRVYbA0xxMZUflpLut8RBd56HyGeE+QIay4HPS+NXsR/bX693l3Tah3Z+VTvkgfGcHUB/Q=
