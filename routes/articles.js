@@ -11,4 +11,6 @@ module.exports = (router) => {
     .patch(validateToken, controller.editArticle);
   router.route('/articles/:articleId')
     .delete(validateToken, controller.deleteArticle);
+  router.route('/articles/:articleId/comment')
+    .post(validateToken, controller.addComment);
 };

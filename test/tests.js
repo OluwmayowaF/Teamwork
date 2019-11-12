@@ -10,8 +10,8 @@ const testDb = require('./testHelper');
 const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU3MzQ1Njc3MywiZXhwIjoxNTgyMDk2NzczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.ibjJKYM05yRqFB3MjGTwvrKE2y3nDcniPQ4aCPGxPCk';
 const employeeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU3MzQ1NzIwOSwiZXhwIjoxNTgyMDk3MjA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.9LN_3xp6toYwD2EeaCDG7MsEDBOMuTG7aUNDbw-j5G8';
 const employee2Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwOSwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.JdA5UMCe-P-3qNWXe6vLDggr5Ti8wXwJtd4et8RsB6s';
-// const employee3Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxMCwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.W6yaFiJjiCbbNdPG-HLn-ZhDH8IVNRU33fEFhAoYyXk';
-let testid = ''; 
+const employee3Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxMCwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.W6yaFiJjiCbbNdPG-HLn-ZhDH8IVNRU33fEFhAoYyXk';
+let testid = '';
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -22,7 +22,6 @@ describe('Teamwork Restful API tests', () => {
     done();
   });
   describe('Test that the admin can create employes on using the post route - /api/v1/auth/create-user', () => {
-
     it('Should not  allow a user without the bearer token to create a user', (done) => {
       const user = {
         firstName: 'Test',
@@ -339,7 +338,6 @@ describe('Teamwork Restful API tests', () => {
         .end((err, res) => {
           expect(res).to.have.status(401);
           expect(res.body.error).to.equals('Authorization Token not found');
-         
           done();
         });
     });
@@ -420,7 +418,7 @@ describe('Teamwork Restful API tests', () => {
       chai
         .request(app)
         .patch('/api/v1/articles/1')
-        .set('Authorization', `Bearer ${employee2Token}`)
+        .set('Authorization', `Bearer ${employee3Token}`)
         .send(article)
         .end((err, res) => {
           expect(res).to.have.status(404);

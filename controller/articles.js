@@ -102,4 +102,47 @@ module.exports = {
     }
   },
 
+  async addComment(req, res) {
+    if (!req.body.comment) {
+      return res.status(400).json({
+        status: 'error',
+        error: 'Your comment must have some content ',
+      });
+    }
+    const findArticle = `SELECT * FROM 
+    articles WHERE id = $1`;
+    const addComment = `INSERT INTO
+    articles_comments(articleId, ownerId, comment)
+    values($1, $2, $3) returning *`;
+
+    try {
+      const { rows } = await db.query(findArticle, [req.params.articleId]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Article was not found!!',
+        });
+      }
+      const values = [
+        req.params.articleId,
+        req.user.id,
+        req.body.comment,
+      ];
+
+      const comment = await db.query(addComment, values);
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Comment succesfully Added',
+          createdOn: comment.rows[0].created_on,
+          articleTitle: rows[0].title,
+          article: rows[0].article,
+          comment: comment.rows[0].comment,
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+
 };
