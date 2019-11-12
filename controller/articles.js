@@ -30,8 +30,14 @@ module.exports = {
 
       });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 
-}
+};

@@ -321,4 +321,72 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+  describe('Test that signed in employees can create articles on the system', () => {
+    it('Should not allow anyone one who is not signed in to create an article', (done) => {
+      const article = {
+        title: 'The Great sails',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern period in which international trade and naval warfare',
+        tag: 'general',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles')
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not allow articles without a title to be submitted', (done) => {
+      const article = {
+        title: '',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern period in which international trade and naval warfare',
+        tag: 'genral',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.error).to.equals('Your article must have a title and some content');
+          done();
+        });
+    });
+    it('Should not allow articles without content to be submitted', (done) => {
+      const article = {
+        title: 'The Great Sails',
+        article: '',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.error).to.equals('Your article must have a title and some content');
+          done();
+        });
+    });
+    it('Should allow a logged in employee to create an article with the rigth data', (done) => {
+      const article = {
+        title: 'The Great Sails',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern perioe',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+  });
+
 });
