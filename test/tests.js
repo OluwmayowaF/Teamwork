@@ -11,6 +11,7 @@ const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI
 const employeeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU3MzQ1NzIwOSwiZXhwIjoxNTgyMDk3MjA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.9LN_3xp6toYwD2EeaCDG7MsEDBOMuTG7aUNDbw-j5G8';
 const employee2Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwOSwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.JdA5UMCe-P-3qNWXe6vLDggr5Ti8wXwJtd4et8RsB6s';
 // const employee3Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxMCwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.W6yaFiJjiCbbNdPG-HLn-ZhDH8IVNRU33fEFhAoYyXk';
+let testid = ''; 
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -388,7 +389,7 @@ describe('Teamwork Restful API tests', () => {
         .end((err, res) => {
           expect(res).to.have.status(201);
           expect(res.body.status).to.equals('success');
-          const testid = res.body.data.articleId;
+          testid = res.body.data.articleId;
           done();
         });
     });
@@ -453,7 +454,7 @@ describe('Teamwork Restful API tests', () => {
       };
       chai
         .request(app)
-        .delete('/api/v1/articles/1')
+        .delete(`/api/v1/articles/${testid}`)
         .send(article)
         .end((err, res) => {
           expect(res).to.have.status(401);
@@ -469,12 +470,28 @@ describe('Teamwork Restful API tests', () => {
       };
       chai
         .request(app)
-        .delete('/api/v1/articles/1')
+        .delete(`/api/v1/articles/${testid}`)
         .set('Authorization', `Bearer ${employee2Token}`)
         .send(article)
         .end((err, res) => {
           expect(res).to.have.status(404);
           expect(res.body.error).to.equals('Article with that id was not found for this user!');
+          done();
+        });
+    });
+    it('Should allow a logged in Owner of the article to deletean article with the right data', (done) => {
+      const article = {
+        title: 'The Only Sails',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern perioe',
+      };
+      chai
+        .request(app)
+        .delete(`/api/v1/articles/${testid}`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
           done();
         });
     });
