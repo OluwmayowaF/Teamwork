@@ -157,4 +157,85 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+  describe('Test that employees can sign in with the credentials admin provides to them', () => {
+    it('Should not allow an employee sign in without entering thier password ', (done) => {
+      const user = {
+        email: 'unittest@employee.com',
+        password: '',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Kindly enter your email and password to login');
+          done();
+        });
+    });
+    it('Should not allow an employee sign in without entering thier email ', (done) => {
+      const user = {
+        email: '',
+        password: '123456',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Kindly enter your email and password to login');
+          done();
+        });
+    });
+    it('Should not allow an employee sign in with the wrong password', (done) => {
+      const user = {
+        email: 'unittest@employee.com',
+        password: '1235678',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Credentials');
+          done();
+        });
+    });
+    it('Should not allow an employee sign in with an invalid email', (done) => {
+      const user = {
+        email: 'employee.com',
+        password: '1235678',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Please enter a valid email');
+          done();
+        });
+    });
+    it('Should allow an employee sign in succesfully with the right credentials', (done) => {
+      const user = {
+        email: 'unittest@employee.com',
+        password: '12345678',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+  });
 });
