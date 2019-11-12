@@ -40,4 +40,44 @@ module.exports = {
     }
   },
 
+  async editArticle(req, res) {
+    const findArticle = `SELECT * FROM 
+    articles WHERE id = $1 AND ownerId = $2`;
+    const updateArticle = `UPDATE articles
+    SET title = $1, article = $2, tag=$3
+    WHERE id = $4 AND ownerId = $5 returning *`;
+
+    try {
+      const { rows } = await db.query(findArticle, [req.params.articleId, req.user.id]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Article was not found!!',
+        });
+      }
+      const values = [
+        req.body.title || rows[0].title,
+        req.body.article || rows[0].article,
+        req.body.tag || rows[0].tag,
+        req.params.articleId,
+        req.user.id,
+      ];
+      const response = await db.query(updateArticle, values);
+      return res.status(201).json({
+        status: 'success',
+        data: {
+          message: 'Article succesfully Updated',
+          ownerId: response.rows[0].ownerId,
+          articleId: response.rows[0].id,
+          createdOn: response.rows[0].created_on,
+          title: response.rows[0].title,
+          article: response.rows[0].article,
+          category: response.rows[0].tag,
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+
 };
