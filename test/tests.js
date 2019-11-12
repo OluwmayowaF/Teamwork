@@ -494,4 +494,51 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+  describe('Test that signed in employees can add comments to other employees articles', () => {
+    it('Should not allow comments without any comment to be submitted', (done) => {
+      const comment = {
+        comment: '',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles/1/comment')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(comment)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.error).to.equals('Your comment must have some content');
+          done();
+        });
+    });
+    it('Should ensure that the article actually exist before saving a comment', (done) => {
+      const comment = {
+        comment: 'Nice ooh. i have learnt alot from this',
+      };
+      chai
+        .request(app)
+        .post(`/api/v1/articles/${testid}/comment`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(comment)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.error).to.equals('Article was not found!');
+          done();
+        });
+    });
+    it('Should allow a logged in employee to add a comment to an exisiting article', (done) => {
+      const comment = {
+        comment: 'Nice ooh. i have learnt alot from this',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles/1/comment')
+        .set('Authorization', `Bearer ${employee2Token}`)
+        .send(comment)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+  });
 });

@@ -106,7 +106,7 @@ module.exports = {
     if (!req.body.comment) {
       return res.status(400).json({
         status: 'error',
-        error: 'Your comment must have some content ',
+        error: 'Your comment must have some content',
       });
     }
     const findArticle = `SELECT * FROM 
@@ -120,7 +120,7 @@ module.exports = {
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
-          error: 'Article was not found!!',
+          error: 'Article was not found!',
         });
       }
       const values = [
@@ -130,7 +130,7 @@ module.exports = {
       ];
 
       const comment = await db.query(addComment, values);
-      return res.status(200).json({
+      return res.status(201).json({
         status: 'success',
         data: {
           message: 'Comment succesfully Added',
