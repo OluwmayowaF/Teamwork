@@ -52,7 +52,7 @@ module.exports = {
       if (!rows[0]) {
         return res.status(404).json({
           status: 'error',
-          error: 'Article was not found!!',
+          error: 'Article with that id was not found for this user!',
         });
       }
       const values = [

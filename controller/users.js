@@ -100,6 +100,7 @@ module.exports = {
         });
       }
       const bearerToken = Helper.generateToken(rows[0].id);
+
       return res.status(200).json({
         status: 'success',
         data: {

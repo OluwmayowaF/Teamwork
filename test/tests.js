@@ -9,6 +9,9 @@ const testDb = require('./testHelper');
 
 const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU3MzQ1Njc3MywiZXhwIjoxNTgyMDk2NzczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.ibjJKYM05yRqFB3MjGTwvrKE2y3nDcniPQ4aCPGxPCk';
 const employeeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU3MzQ1NzIwOSwiZXhwIjoxNTgyMDk3MjA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.9LN_3xp6toYwD2EeaCDG7MsEDBOMuTG7aUNDbw-j5G8';
+const employee2Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwOSwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.JdA5UMCe-P-3qNWXe6vLDggr5Ti8wXwJtd4et8RsB6s';
+const employee3Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxMCwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.W6yaFiJjiCbbNdPG-HLn-ZhDH8IVNRU33fEFhAoYyXk';
+
 const { expect } = chai;
 chai.use(chaiHttp);
 
@@ -18,7 +21,7 @@ describe('Teamwork Restful API tests', () => {
     done();
   });
   describe('Test that the admin can create employes on using the post route - /api/v1/auth/create-user', () => {
-    // Include Tests for authorization token
+
     it('Should not  allow a user without the bearer token to create a user', (done) => {
       const user = {
         firstName: 'Test',
@@ -87,7 +90,7 @@ describe('Teamwork Restful API tests', () => {
           done();
         });
     });
-    // Include Tests that its only admin
+
     it('Allows an admin create an Employee with the right credentials', (done) => {
       const user = {
         firstName: 'Test',
@@ -388,5 +391,55 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
-
+  describe('Test that signed in employees can edit their articles on the system', () => {
+    it('Should not allow anyone one who is not signed in to edit an article', (done) => {
+      const article = {
+        title: 'The Great sails',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern period in which international trade and naval warfare',
+        tag: 'general',
+      };
+      chai
+        .request(app)
+        .patch('/api/v1/articles/1')
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not allow anyone outside the author of the article to edit', (done) => {
+      const article = {
+        title: 'Red Dragon',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern period in which international trade and naval warfare',
+        tag: 'genral',
+      };
+      chai
+        .request(app)
+        .patch('/api/v1/articles/1')
+        .set('Authorization', `Bearer ${employee2Token}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.error).to.equals('Article with that id was not found for this user!');
+          done();
+        });
+    });
+    it('Should allow a logged in Owner of the article to edit/update an article with the right data', (done) => {
+      const article = {
+        title: 'The Only Sails',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern perioe',
+      };
+      chai
+        .request(app)
+        .patch('/api/v1/articles/1')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+  });
 });
