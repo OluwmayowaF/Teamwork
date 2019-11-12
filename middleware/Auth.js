@@ -15,10 +15,7 @@ module.exports = {
         const text = 'SELECT * FROM users WHERE id = $1';
         const { rows } = await db.query(text, [decoded.userId]);
         if (!rows[0]) {
-          return res.status(404).json({
-            status: 'error',
-            error: 'Invalid Token',
-          });
+          return res.status(404).json({ status: 'error', error: 'Invalid Token' });
         }
         // Decoded token to be passed back to the request object
         const User = rows[0];
@@ -26,7 +23,7 @@ module.exports = {
         req.role = User.role;
         next();
       } catch (err) {
-        throw new Error(err);
+        return res.status(401).json({ status: 'error', error: 'Invalid Token' });
       }
     } else {
       return res.status(401).json({

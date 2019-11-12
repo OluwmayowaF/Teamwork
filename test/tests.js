@@ -41,6 +41,30 @@ describe('Teamwork Restful API tests', () => {
           done();
         });
     });
+    it('Should not  allow a user with an invalid bearer token to create a user', (done) => {
+      const user = {
+        firstName: 'Test',
+        lastName: 'Employee',
+        email: 'unittest@employee.com',
+        password: '12345678',
+        gender: 'Male',
+        jobRole: 'Talent Manager',
+        department: 'A & R',
+        role: 'test',
+        address: 'Lagos',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/create-user')
+        .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC92MVwvbG9naW5cL2FkbWluIiwiaWF0IjoxNTcyMzczMjczLCJleHAiOjE1NzI1ODkyNzMsIm5iZiI6MTU3MjM3MzI3MywianRpIjoiMEhhSUFUU0JWb0Z4Q25XRSIsInN1YiI6NDQsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.cM6wLgiZWhVrjp0qRGlbebBTgj07CN7O4JwbptH5SyY')
+        .send(user)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
     it('Should not  allow anyone who is not an admin to create a user', (done) => {
       const user = {
         firstName: 'Test',
@@ -232,8 +256,67 @@ describe('Teamwork Restful API tests', () => {
         .post('/api/v1/auth/signin')
         .send(user)
         .end((err, res) => {
-          expect(res).to.have.status(201);
+          expect(res).to.have.status(200);
           expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should ensure a user with right credentials is not prevented from signing in', (done) => {
+      const user = {
+        email: 'unittest@employee.com',
+        password: '12345678',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/auth/signin')
+        .send(user)
+        .end((err, res) => {
+          expect(res).not.to.have.status(400);
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employee can view information ', () => {
+    it('Should allow signed in employee see their details ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/user')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should work if user fulfils all requirements ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/user')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).not.to.have.status(400);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/user')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible without a fake token bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/user')
+        .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
           done();
         });
     });

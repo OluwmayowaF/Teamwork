@@ -60,7 +60,7 @@ module.exports = {
           error: 'User with that EMAIL already exist',
         });
       }
-      return res.status(500).send(error);
+      return res.status(400).send(error);
     }
   },
 
@@ -100,7 +100,7 @@ module.exports = {
         });
       }
       const bearerToken = Helper.generateToken(rows[0].id);
-      return res.status(201).json({
+      return res.status(200).json({
         status: 'success',
         data: {
           message: 'Welcome! you hvae signed in succesfully',
@@ -113,8 +113,24 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(400).send(error);
     }
+  },
+
+  async getLoggedInUser(req, res) {
+    const text = 'SELECT * FROM users WHERE id = $1';
+    const { rows } = await db.query(text, [req.user.id]);
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        message: `Hi ${rows[0].firstname}!`,
+        userId: rows[0].id,
+        firstname: rows[0].firstname,
+        lastname: rows[0].lastname,
+        email: rows[0].email,
+        department: rows[0].department,
+      },
+    });
   },
 
 
