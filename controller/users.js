@@ -64,5 +64,58 @@ module.exports = {
     }
   },
 
+  /**
+   * Login
+   * @param {object} req
+   * @param {object} res
+   *
+   */
+
+  async login(req, res) {
+    if (!req.body.email || !req.body.password) {
+      return res.status(400).json({
+        status: 'error',
+        error: 'Kindly enter your email and password to login',
+      });
+    } if (!(Helper.validateEmail(req.body.email))) {
+      return res.status(400).json({
+        status: 'error',
+        error: 'Please enter a valid email',
+      });
+    }
+    const text = 'SELECT * FROM users WHERE email = $1';
+    const email = [req.body.email];
+
+    try {
+      const { rows } = await db.query(text, email);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Invalid Credentials',
+        });
+      } if (!Helper.comparePassword(rows[0].password, req.body.password)) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Invalid Credentials',
+        });
+      }
+      const bearerToken = Helper.generateToken(rows[0].id);
+      return res.status(201).json({
+        status: 'success',
+        data: {
+          message: 'Welcome! you hvae signed in succesfully',
+          token: bearerToken,
+          userId: rows[0].id,
+          firstname: rows[0].firstname,
+          lastname: rows[0].lastname,
+          email: rows[0].email,
+          department: rows[0].department,
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
+
 
 };
