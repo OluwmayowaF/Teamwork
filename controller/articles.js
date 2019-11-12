@@ -79,5 +79,27 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  async deleteArticle(req, res) {
+    const findArticle = `DELETE FROM 
+    articles WHERE id = $1 AND ownerId = $2 returning *`;
+
+    try {
+      const { rows } = await db.query(findArticle, [req.params.articleId, req.user.id]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Article with that id was not found for this user!',
+        });
+      }
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Article succesfully Deleted',
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
 
 };

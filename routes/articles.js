@@ -9,4 +9,6 @@ module.exports = (router) => {
     .post(validateToken, controller.createArticle);
   router.route('/articles/:articleId')
     .patch(validateToken, controller.editArticle);
+  router.route('/articles/:articleId')
+    .delete(validateToken, controller.deleteArticle);
 };
