@@ -11,4 +11,6 @@ module.exports = (router) => {
     .delete(validateToken, controller.deleteGif);
   router.route('/gifs/:gifId/comment')
     .post(validateToken, controller.addComment);
+  router.route('/gifs/:gifId')
+    .get(validateToken, controller.getGif);
 };

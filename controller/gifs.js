@@ -121,6 +121,41 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  async getGif(req, res) {
+    let comment = {};
+    const findGif = `SELECT *
+    FROM gifs
+    WHERE id = $1`;
+    const findComment = `SELECT 
+    id as commentId, comment, ownerId as authorId
+    FROM
+    gifs_comments WHERE gifId= $1`;
+
+    try {
+      const { rows } = await db.query(findGif, [req.params.gifId]);
+      if (!rows[0]) {
+        return res.status(404).send({ message: 'That Gif does not exist!' });
+      }
+      const comments = await db.query(findComment, [req.params.gifId]);
+      if (!comments.rows[0]) {
+        comment = 'No Comments have been added to this article';
+      } else {
+        comment = comments.rows;
+      }
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          id: rows[0].id,
+          createdOn: rows[0].created_on,
+          title: rows[0].title,
+          url: rows[0].imageurl,
+          comments: comment,
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
 
 
 };
