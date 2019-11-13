@@ -13,4 +13,6 @@ module.exports = (router) => {
     .delete(validateToken, controller.deleteArticle);
   router.route('/articles/:articleId/comment')
     .post(validateToken, controller.addComment);
+  router.route('/articles/:articleId')
+    .get(validateToken, controller.getArticle);
 };

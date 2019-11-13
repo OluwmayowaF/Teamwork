@@ -145,4 +145,41 @@ module.exports = {
     }
   },
 
+  async getArticle(req, res) {
+    // Return all Articles for a user with comments
+
+    const findArticle = `SELECT 
+    id, created_date, title, article
+    FROM articles
+    WHERE id = $1`;
+    const findComment = `SELECT 
+    id as commentId, comment, ownerId as authorId
+    FROM
+    articles_comments WHERE articleId= $1`;
+    let comment = {};
+
+    // try {
+    const { rows } = await db.query(findArticle, [req.params.articleId]);
+    if (!rows[0]) {
+      return res.status(404).send({ status: 'error', message: 'That article does not exist' });
+    }
+    const comments = await db.query(findComment, [req.params.articleId]);
+    if (!comments.rows[0]) {
+      comment = 'No Comments have been added to this article';
+    } else {
+      comment = comments.rows;
+    }
+
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        id: rows[0].id,
+        createdOn: rows[0].created_date,
+        title: rows[0].title,
+        article: rows[0].article,
+        comments: comment,
+      },
+    });
+  },
+
 };
