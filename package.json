@@ -34,6 +34,7 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "express-fileupload": "^1.1.6-alpha.6",
+        "fs": "0.0.1-security",
         "istanbul": "^0.4.5",
         "jsonwebtoken": "^8.5.1",
         "morgan": "^1.9.1",

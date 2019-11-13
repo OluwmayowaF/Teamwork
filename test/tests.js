@@ -4,8 +4,10 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
+// const fs = require('fs');
 const app = require('../server');
 const testDb = require('./testHelper');
+
 
 const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU3MzQ1Njc3MywiZXhwIjoxNTgyMDk2NzczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.ibjJKYM05yRqFB3MjGTwvrKE2y3nDcniPQ4aCPGxPCk';
 const employeeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU3MzQ1NzIwOSwiZXhwIjoxNTgyMDk3MjA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.9LN_3xp6toYwD2EeaCDG7MsEDBOMuTG7aUNDbw-j5G8';
@@ -608,4 +610,24 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+ /* describe('Test that signed in employees can post gifs on the system', () => {
+    it('Should allow a logged in employee to create a gif with the rigth data', (done) => {
+
+      const gif = {
+        title: 'redragon',
+        image: `${fs.readFileSync('/Users/Mawhizzle/Documents/Programming/Personal Project /Teamwork/test/tenor.gif')}`,
+      };
+      chai
+        .request(app)
+        .post('/api/v1/gifs')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(gif)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          testid = res.body.data.articleId;
+          done();
+        });
+    });
+  });*/
 });
