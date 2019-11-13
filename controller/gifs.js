@@ -78,6 +78,49 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+  async addComment(req, res) {
+    if (!req.body.comment) {
+      return res.status(400).json({
+        status: 'error',
+        error: 'Your comment must have some content ',
+      });
+    }
+    // Fetch Gif
+    const findgif = `SELECT * FROM
+    gifs WHERE id = $1`;
+
+    const addComment = `INSERT INTO 
+    gifs_comments(ownerId, gifId, comment) 
+    values($1, $2, $3) returning *`;
+
+    const values = [
+      req.user.id,
+      req.params.gifId,
+      req.body.comment,
+    ];
+
+    try {
+      const gif = await db.query(findgif, [req.params.gifId]);
+      if (!gif.rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Gif was not found!!',
+        });
+      } const comment = await db.query(addComment, values);
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Comment succesfully Added',
+          createdOn: comment.rows[0].created_on,
+          Giftitle: gif.rows[0].title,
+          Gif: gif.rows[0].imageUrl,
+          comment: comment.rows[0].comment,
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
+  },
 
 
 };

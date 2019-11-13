@@ -9,4 +9,6 @@ module.exports = (router) => {
     .post(validateToken, controller.createGif);
   router.route('/gifs/:gifId')
     .delete(validateToken, controller.deleteGif);
+  router.route('/gifs/:gifId/comment')
+    .post(validateToken, controller.addComment);
 };
