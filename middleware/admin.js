@@ -5,10 +5,10 @@ module.exports = {
       next();
     } else {
       const result = {
-        error: 'Unauthorized! This Route is reserved for Admin Users Only.',
-        status: 401,
+        error: 'Permission Denied! This Route is reserved for Admin Users Only.',
+        status: 'error',
       };
-      return res.status(401).send(result);
+      return res.status(403).send(result);
     }
   },
 

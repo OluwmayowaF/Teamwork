@@ -85,8 +85,8 @@ describe('Teamwork Restful API tests', () => {
         .set('Authorization', `Bearer ${employeeToken}`)
         .send(user)
         .end((err, res) => {
-          expect(res).to.have.status(401);
-          expect(res.body.error).to.equals('Unauthorized! This Route is reserved for Admin Users Only.');
+          expect(res).to.have.status(403);
+          expect(res.body.error).to.equals('Permission Denied! This Route is reserved for Admin Users Only.');
           done();
         });
     });

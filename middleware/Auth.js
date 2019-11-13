@@ -28,7 +28,7 @@ module.exports = {
     } else {
       return res.status(401).json({
         error: 'Authorization Token not found',
-        status: 401,
+        status: 'error',
       });
     }
   },
