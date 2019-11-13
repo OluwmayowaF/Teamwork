@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 const router = express.Router(); // Setup express router
@@ -19,6 +20,11 @@ if (environment !== 'production') {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true,
+}));
+
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: '/tmp/',
 }));
 
 app.use('/api/v1', routes(router));
