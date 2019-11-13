@@ -541,4 +541,71 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+  describe('Test that signed in employee can view a specific article ', () => {
+    it('Should allow signed in employee see a specific article', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/articles/1')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should work if user fulfils all requirements ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/articles/1')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).not.to.have.status(400);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/articles/1')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible with a fake bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/articles/1')
+        .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
+    it('Should not show an article which does not exist', (done) => {
+      chai
+        .request(app)
+        .get(`/api/v1/articles/${testid}`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.error).to.equals('That article no longer exists');
+          done();
+        });
+    });
+    it('Should return a message if the article has no comment', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/articles/2')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.data.comments).to.equals('No Comments have been added to this article');
+          done();
+        });
+    });
+  });
 });

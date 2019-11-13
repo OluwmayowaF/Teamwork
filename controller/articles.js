@@ -161,7 +161,7 @@ module.exports = {
     // try {
     const { rows } = await db.query(findArticle, [req.params.articleId]);
     if (!rows[0]) {
-      return res.status(404).send({ status: 'error', message: 'That article does not exist' });
+      return res.status(404).send({ status: 'error', error: 'That article no longer exists' });
     }
     const comments = await db.query(findComment, [req.params.articleId]);
     if (!comments.rows[0]) {
