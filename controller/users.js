@@ -25,16 +25,8 @@ module.exports = {
               users( firstName, lastName, email, password, gender, jobRole, department, address, role)
               VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) returning *`;
     const hashPassword = Helper.hashPassword(req.body.password);
-    const values = [
-      req.body.firstName,
-      req.body.lastName,
-      req.body.email,
-      hashPassword,
-      req.body.gender,
-      req.body.jobRole,
-      req.body.department,
-      req.body.address,
-      req.body.role,
+    const values = [req.body.firstName, req.body.lastName, req.body.email, hashPassword,
+      req.body.gender, req.body.jobRole, req.body.department, req.body.address, req.body.role,
     ];
 
     try {
@@ -55,12 +47,8 @@ module.exports = {
       });
     } catch (error) {
       if (error.routine === '_bt_check_unique') {
-        return res.status(400).json({
-          status: 'error',
-          error: 'User with that EMAIL already exist',
-        });
-      }
-      return res.status(400).send(error);
+        return res.status(400).json({ status: 'error', error: 'User with that EMAIL already exist' });
+      } return res.status(500).json({ status: 'error', error: 'Something went wrong, Please try again' });
     }
   },
 
@@ -104,7 +92,7 @@ module.exports = {
       return res.status(200).json({
         status: 'success',
         data: {
-          message: 'Welcome! you hvae signed in succesfully',
+          message: 'Welcome! you have signed in succesfully',
           token: bearerToken,
           userId: rows[0].id,
           firstname: rows[0].firstname,

@@ -45,7 +45,7 @@ app.use('/api/v1', routes(router));
 }); */
 
 app.listen(`${stage.port}`, () => {
-  console.log(`Server now listening at localhost:${stage.port}`);
+  // console.log(`Server now listening at localhost:${stage.port}`);
 });
 
 module.exports = app;

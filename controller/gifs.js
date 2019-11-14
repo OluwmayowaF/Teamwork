@@ -46,7 +46,6 @@ module.exports = {
     const deletegif = `DELETE FROM 
     gifs WHERE id = $1 AND ownerId = $2  returning *`;
     const values = [req.params.gifId, req.user.id];
-
     try {
       const { rows } = await db.query(findgif, values);
       if (!rows[0]) {
@@ -59,17 +58,12 @@ module.exports = {
 
       return res.status(200).json({
         status: 'success',
-        data: {
-          message: 'Gif succesfully Deleted',
-        },
+        data: { message: 'Gif succesfully Deleted' },
       });
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        data: { message: 'Something weent wrong, Please try again' },
       });
     }
   },
@@ -145,21 +139,14 @@ module.exports = {
   },
 
   async flagGif(req, res) {
-    const findgif = `SELECT *
-    FROM gifs
-    WHERE id = $1`;
-    const flaggif = `UPDATE gifs
-    SET flags = flags + 1
-    WHERE id = $1 returning *`;
-
+    const findgif = 'SELECT * FROM gifs WHERE id = $1';
     try {
       const gif = await db.query(findgif, [req.params.gifId]);
       if (!gif.rows[0]) {
-        return res.status(404).json({
-          status: 'error',
-          error: 'Gif was not found!!',
-        });
+        return res.status(404).json({ status: 'error', error: 'Gif was not found!!' });
       }
+      const flaggif = `UPDATE gifs SET flags = flags + 1
+      WHERE id = $1 returning *`;
 
       const flag = await db.query(flaggif, [req.params.gifId]);
       return res.status(200).json({
@@ -170,20 +157,14 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        data: { message: 'Something went wrong, Please try again' },
       });
     }
   },
 
   async deleteFlaged(req, res) {
-    const findgif = `SELECT *
-    FROM gifs
-    WHERE id = $1 AND flags > 0`;
-    const deletegif = `DELETE FROM 
-    gifs WHERE id = $1`;
+    const findgif = 'SELECT * FROM gifs WHERE id = $1 AND flags > 0';
+    const deletegif = 'DELETE FROM gifs WHERE id = $1';
 
     try {
       const { rows } = await db.query(findgif, [req.params.gifId]);
@@ -192,7 +173,7 @@ module.exports = {
           status: 'error',
           error: 'Flagged Gif was not found',
         });
-      } const gif = await db.query(deletegif, [req.params.gifId]);
+      } await db.query(deletegif, [req.params.gifId]);
       return res.status(200).json({
         status: 'success',
         data: {
@@ -200,13 +181,7 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500).json({
-        status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
-      });
+      return res.status(500).json({ status: 'error', message: 'Something weent wrong, Please try again' });
     }
   },
 

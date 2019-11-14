@@ -122,10 +122,8 @@ module.exports = {
         error: 'Your comment must have some content',
       });
     }
-    const findArticle = `SELECT * FROM 
-    articles WHERE id = $1`;
-    const addComment = `INSERT INTO
-    articles_comments(articleId, ownerId, comment)
+    const findArticle = 'SELECT * FROM articles WHERE id = $1';
+    const addComment = `INSERT INTO articles_comments(articleId, ownerId, comment)
     values($1, $2, $3) returning *`;
 
     try {
@@ -136,11 +134,7 @@ module.exports = {
           error: 'Article was not found!',
         });
       }
-      const values = [
-        req.params.articleId,
-        req.user.id,
-        req.body.comment,
-      ];
+      const values = [req.params.articleId, req.user.id, req.body.comment];
 
       const comment = await db.query(addComment, values);
       return res.status(201).json({
@@ -203,20 +197,13 @@ module.exports = {
 
   async getFeed(req, res) {
     const getArticles = `SELECT id, 
-    created_date AS createdOn,
-    title,
-    article,
-    ownerId AS authorId 
-    FROM
-    articles ORDER BY created_date 
-   ASC`;
+    created_date AS createdOn, title,
+    article, ownerId AS authorId 
+    FROM articles ORDER BY created_date ASC`;
     const getGifs = `SELECT id,
-    created_date AS createdOn,
-    title,
-    imageUrl AS url,
-    ownerId AS authorId FROM 
+    created_date AS createdOn, title,
+    imageUrl AS url, ownerId AS authorId FROM 
    gifs ORDER BY created_date  ASC`;
-
 
     const articles = await db.query(getArticles);
     const gifs = await db.query(getGifs);
@@ -267,20 +254,12 @@ module.exports = {
   },
 
   async flagArticle(req, res) {
-    const findarticle = `SELECT *
-    FROM articles
-    WHERE id = $1`;
-    const flagarticle = `UPDATE articles
-    SET flags = flags + 1
-    WHERE id = $1 returning *`;
-
+    const findarticle = 'SELECT * FROM articles WHERE id = $1';
+    const flagarticle = 'UPDATE articles SET flags = flags + 1 WHERE id = $1 returning *';
     try {
       const article = await db.query(findarticle, [req.params.articleId]);
       if (!article.rows[0]) {
-        return res.status(404).json({
-          status: 'error',
-          error: 'Article was not found!',
-        });
+        return res.status(404).json({ status: 'error', error: 'Article was not found!' });
       }
 
       const flag = await db.query(flagarticle, [req.params.articleId]);
@@ -292,10 +271,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        data: { message: 'Something weent wrong, Please try again' },
       });
     }
   },
