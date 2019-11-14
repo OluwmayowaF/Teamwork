@@ -15,6 +15,8 @@ module.exports = (router) => {
     .post(validateToken, controller.addComment);
   router.route('/articles/:articleId')
     .get(validateToken, controller.getArticle);
+  router.route('/articles/category/:tag')
+    .get(validateToken, controller.getArticlebyTag);
   router.route('/feed')
     .get(validateToken, controller.getFeed);
 };

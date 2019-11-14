@@ -69,7 +69,7 @@ module.exports = {
           message: 'Article succesfully Updated',
           ownerId: response.rows[0].ownerId,
           articleId: response.rows[0].id,
-          createdOn: response.rows[0].created_on,
+          createdOn: response.rows[0].created_date,
           title: response.rows[0].title,
           article: response.rows[0].article,
           category: response.rows[0].tag,
@@ -134,7 +134,7 @@ module.exports = {
         status: 'success',
         data: {
           message: 'Comment succesfully Added',
-          createdOn: comment.rows[0].created_on,
+          createdOn: comment.rows[0].created_date,
           articleTitle: rows[0].title,
           article: rows[0].article,
           comment: comment.rows[0].comment,
@@ -214,6 +214,31 @@ module.exports = {
       data: feeds.reverse(),
 
     });
+  },
+
+  async getArticlebyTag(req, res) {
+    const findArticle = `SELECT * FROM 
+    articles WHERE tag = $1`;
+
+    try {
+      const { rows } = await db.query(findArticle, [req.params.tag]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Article was not found!!',
+        });
+      }
+
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Article that belong to this category',
+          articles: rows,
+        },
+      });
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   },
 
 };

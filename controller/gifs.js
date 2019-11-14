@@ -23,7 +23,7 @@ module.exports = {
         data: {
           gifId: rows[0].id,
           message: 'GIF image successfully posted',
-          createdOn: rows[0].created_on,
+          createdOn: rows[0].created_date,
           title: rows[0].title,
           imageUrl: rows[0].imageurl,
         },
@@ -80,8 +80,8 @@ module.exports = {
         status: 'success',
         data: {
           message: 'Comment succesfully Added',
-          createdOn: comment.rows[0].created_on,
-          Giftitle: gif.rows[0].title,
+          createdOn: comment.rows[0].created_date,
+          giftitle: gif.rows[0].title,
           Gif: gif.rows[0].imageUrl,
           comment: comment.rows[0].comment,
         },
@@ -109,7 +109,7 @@ module.exports = {
         status: 'success',
         data: {
           id: rows[0].id,
-          createdOn: rows[0].created_on,
+          createdOn: rows[0].created_date,
           title: rows[0].title,
           url: rows[0].imageurl,
           comments: comment,
