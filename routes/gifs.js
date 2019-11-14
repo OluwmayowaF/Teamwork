@@ -2,6 +2,10 @@ const controller = require('../controller/gifs');
 
 const middleware = require('../middleware/Auth');
 
+const authorization = require('../middleware/admin');
+
+const { adminRoute } = authorization;
+
 const { validateToken } = middleware;
 
 module.exports = (router) => {
@@ -15,4 +19,6 @@ module.exports = (router) => {
     .get(validateToken, controller.getGif);
   router.route('/gifs/:gifId/flag')
     .patch(validateToken, controller.flagGif);
+  router.route('/gifs/:gifId/flag')
+    .delete(validateToken, adminRoute, controller.deleteFlaged);
 };

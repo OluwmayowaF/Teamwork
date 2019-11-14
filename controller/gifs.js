@@ -148,5 +148,31 @@ module.exports = {
     }
   },
 
+  async deleteFlaged(req, res) {
+    const findgif = `SELECT *
+    FROM gifs
+    WHERE id = $1 AND flags > 1`;
+    const deletegif = `DELETE FROM 
+    gifs WHERE id = $1`;
+
+    try {
+      const { rows } = await db.query(findgif, [req.params.gifId]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Flagged Gif was not found',
+        });
+      } const gif = await db.query(deletegif, [req.params.gifId]);
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Gif deleted succesfully',
+        },
+      });
+    } catch (error) {
+      return res.status(500);
+    }
+  },
+
 
 };

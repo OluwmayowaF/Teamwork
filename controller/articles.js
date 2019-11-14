@@ -79,6 +79,7 @@ module.exports = {
       return res.status(500).send(error);
     }
   },
+
   async deleteArticle(req, res) {
     const findArticle = `DELETE FROM 
     articles WHERE id = $1 AND ownerId = $2 returning *`;
@@ -263,6 +264,32 @@ module.exports = {
         status: 'success',
         error: 'Flaged as inappropraite',
         data: flag.rows,
+      });
+    } catch (error) {
+      return res.status(500);
+    }
+  },
+
+  async deleteFlaged(req, res) {
+    const findarticle = `SELECT *
+    FROM articles
+    WHERE id = $1 AND flags > 1`;
+    const deleteArticle = `DELETE FROM 
+    articles WHERE id = $1`;
+
+    try {
+      const { rows } = await db.query(findarticle, [req.params.articleId]);
+      if (!rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Flagged article was not found!',
+        });
+      } await db.query(deleteArticle, [req.params.articleId]);
+      return res.status(200).json({
+        status: 'success',
+        data: {
+          message: 'Article succesfully Deleted',
+        },
       });
     } catch (error) {
       return res.status(500);
