@@ -13,4 +13,6 @@ module.exports = (router) => {
     .post(validateToken, controller.addComment);
   router.route('/gifs/:gifId')
     .get(validateToken, controller.getGif);
+  router.route('/gifs/:gifId/flag')
+    .patch(validateToken, controller.flagGif);
 };

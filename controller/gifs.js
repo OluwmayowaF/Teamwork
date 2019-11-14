@@ -120,5 +120,33 @@ module.exports = {
     }
   },
 
+  async flagGif(req, res) {
+    const findgif = `SELECT *
+    FROM gifs
+    WHERE id = $1`;
+    const flaggif = `UPDATE gifs
+    SET flags = flags + 1
+    WHERE id = $1 returning *`;
+
+    try {
+      const gif = await db.query(findgif, [req.params.gifId]);
+      if (!gif.rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Gif was not found!!',
+        });
+      }
+
+      const flag = await db.query(flaggif, [req.params.gifId]);
+      return res.status(200).json({
+        status: 'success',
+        error: 'Flaged as inappropraite',
+        data: flag.rows,
+      });
+    } catch (error) {
+      return res.status(500);
+    }
+  },
+
 
 };
