@@ -241,4 +241,33 @@ module.exports = {
     }
   },
 
+  async flagArticle(req, res) {
+    const findarticle = `SELECT *
+    FROM articles
+    WHERE id = $1`;
+    const flagarticle = `UPDATE articles
+    SET flags = flags + 1
+    WHERE id = $1 returning *`;
+
+    try {
+      const article = await db.query(findarticle, [req.params.articleId]);
+      if (!article.rows[0]) {
+        return res.status(404).json({
+          status: 'error',
+          error: 'Article was not found!',
+        });
+      }
+
+      const flag = await db.query(flagarticle, [req.params.articleId]);
+      return res.status(200).json({
+        status: 'success',
+        error: 'Flaged as inappropraite',
+        data: flag.rows,
+      });
+    } catch (error) {
+      return res.status(500);
+    }
+  },
+
+
 };
