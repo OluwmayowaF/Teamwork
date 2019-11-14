@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
 
+
 const environment = process.env.NODE_ENV;
 const stage = require('../config')[environment];
 
@@ -8,6 +9,7 @@ dotenv.config();
 
 const pool = new Pool({
   connectionString: stage.DBHost,
+  ssl: true,
 });
 
 module.exports = {
