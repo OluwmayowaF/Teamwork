@@ -7,7 +7,7 @@ module.exports = {
     port: process.env.PORT || 8001,
     DBHost: process.env.DB_TEST_CONN_URL,
   },
-  port: {
+  production: {
     port: process.env.PORT || 3000,
     DBHost: process.env.DB_LOCAL_CONN_URL,
   },
