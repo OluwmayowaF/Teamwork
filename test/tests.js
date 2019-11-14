@@ -4,16 +4,23 @@ process.env.NODE_ENV = 'test';
 
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-// const fs = require('fs');
+const supertest = require('supertest');
+
 const app = require('../server');
 const testDb = require('./testHelper');
 
+
+const environment = process.env.NODE_ENV; // test
+const stage = require('../config')[environment];
+
+const request = supertest(`localhost:${stage.port}`);
 
 const adminToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTU3MzQ1Njc3MywiZXhwIjoxNTgyMDk2NzczLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.ibjJKYM05yRqFB3MjGTwvrKE2y3nDcniPQ4aCPGxPCk';
 const employeeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTU3MzQ1NzIwOSwiZXhwIjoxNTgyMDk3MjA5LCJpc3MiOiJodHRwOi8vbG9jYWxob3N0MzAwMCJ9.9LN_3xp6toYwD2EeaCDG7MsEDBOMuTG7aUNDbw-j5G8';
 const employee2Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwOSwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.JdA5UMCe-P-3qNWXe6vLDggr5Ti8wXwJtd4et8RsB6s';
 const employee3Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxMCwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.W6yaFiJjiCbbNdPG-HLn-ZhDH8IVNRU33fEFhAoYyXk';
 let testid = '';
+let gifid = '';
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -610,24 +617,233 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
- /* describe('Test that signed in employees can post gifs on the system', () => {
-    it('Should allow a logged in employee to create a gif with the rigth data', (done) => {
-
-      const gif = {
-        title: 'redragon',
-        image: `${fs.readFileSync('/Users/Mawhizzle/Documents/Programming/Personal Project /Teamwork/test/tenor.gif')}`,
-      };
+  describe('Test that signed in employees can post gifs on the system', () => {
+    it('Should allow a logged in employee to post a gif with the rigth data', (done) => {
       chai
-        .request(app)
-        .post('/api/v1/gifs')
+        .request(app);
+      request.post('/api/v1/gifs')
+        .field('title', 'redDragon')
+        .attach('image', 'test/tenor.gif')
         .set('Authorization', `Bearer ${employeeToken}`)
-        .send(gif)
         .end((err, res) => {
           expect(res).to.have.status(201);
           expect(res.body.status).to.equals('success');
-          testid = res.body.data.articleId;
+          expect(res.body.data.message).to.equals('GIF image successfully posted');
+          gifid = res.body.data.gifId;
           done();
         });
     });
-  });*/
+    it('Should not allow a logged in employee to post a gif without a title', (done) => {
+      chai
+        .request(app);
+      request.post('/api/v1/gifs')
+        .field('title', '')
+        .attach('image', 'test/tenor.gif')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Enter a title for your gif post');
+          done();
+        });
+    });
+    it('Should not allow a logged in employee to post a gif without a gif', (done) => {
+      chai
+        .request(app);
+      request.post('/api/v1/gifs')
+        .field('title', 'Red Mango')
+        .attach('image', '')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Kindly upload a gif to proceed');
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employees can delete thier gifs on the system', () => {
+    it('Should allow a logged in employee to delete thier gif a gif with the rigth data', (done) => {
+      chai
+        .request(app);
+      request.delete(`/api/v1/gifs/${gifid}`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should not allow  logged in employee to dete a gif that is not thiers', (done) => {
+      chai
+        .request(app);
+      request.delete(`/api/v1/gifs/${gifid}`)
+        .set('Authorization', `Bearer ${employee2Token}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Gif was not found!!');
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employees can add comments to other employees gifs', () => {
+    it('Should not allow comments without any comment to be submitted', (done) => {
+      const comment = {
+        comment: '',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/gifs/1/comment')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(comment)
+        .end((err, res) => {
+          expect(res).to.have.status(400);
+          expect(res.body.error).to.equals('Your comment must have some content');
+          done();
+        });
+    });
+    it('Should ensure that the gif actually exist before saving a comment', (done) => {
+      const comment = {
+        comment: 'Nice ooh. i have learnt alot from this',
+      };
+      chai
+        .request(app)
+        .post(`/api/v1/gifs/${gifid}/comment`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(comment)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.error).to.equals('Gif was not found!');
+          done();
+        });
+    });
+    it('Should allow a logged in employee to add a comment to an exisiting gif', (done) => {
+      const comment = {
+        comment: 'Nice ooh. i have learnt alot from this',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/gifs/1/comment')
+        .set('Authorization', `Bearer ${employee2Token}`)
+        .send(comment)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employee can view a specific gif ', () => {
+    it('Should allow signed in employee see a specific gif', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/gifs/1')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should work if user fulfils all requirements ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/gifs/1')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).not.to.have.status(400);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/gifs/1')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible with a fake bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/gifs/1')
+        .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
+    it('Should not show a gif which does not exist', (done) => {
+      chai
+        .request(app)
+        .get(`/api/v1/gifs/${gifid}`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          expect(res.body.error).to.equals('Gif was not found!');
+          done();
+        });
+    });
+    it('Should return a message if the gif has no comment', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/gifs/2')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.data.comments).to.equals('No Comments have been added to this gif');
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employee can view his feed all gifs and articles ', () => {
+    it('Should allow signed in employee see thier feed', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/feed')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should work if user fulfils all requirements ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/feed')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).not.to.have.status(404);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/feed')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible with a fake bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/feed')
+        .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
+  });
 });

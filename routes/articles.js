@@ -16,5 +16,5 @@ module.exports = (router) => {
   router.route('/articles/:articleId')
     .get(validateToken, controller.getArticle);
   router.route('/feed')
-    .get(controller.getFeed);
+    .get(validateToken, controller.getFeed);
 };

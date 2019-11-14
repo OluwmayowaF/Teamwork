@@ -38,7 +38,7 @@ module.exports = {
           gifId: rows[0].id,
           createdOn: rows[0].created_on,
           title: rows[0].title,
-          article: rows[0].imageUrl,
+          article: rows[0].imageurl,
           gif: rows[0],
         },
       });
@@ -82,7 +82,7 @@ module.exports = {
     if (!req.body.comment) {
       return res.status(400).json({
         status: 'error',
-        error: 'Your comment must have some content ',
+        error: 'Your comment must have some content',
       });
     }
     // Fetch Gif
@@ -104,10 +104,10 @@ module.exports = {
       if (!gif.rows[0]) {
         return res.status(404).json({
           status: 'error',
-          error: 'Gif was not found!!',
+          error: 'Gif was not found!',
         });
       } const comment = await db.query(addComment, values);
-      return res.status(200).json({
+      return res.status(201).json({
         status: 'success',
         data: {
           message: 'Comment succesfully Added',
@@ -134,11 +134,11 @@ module.exports = {
     try {
       const { rows } = await db.query(findGif, [req.params.gifId]);
       if (!rows[0]) {
-        return res.status(404).send({ message: 'That Gif does not exist!' });
+        return res.status(404).send({ status: 'error', error: 'Gif was not found!' });
       }
       const comments = await db.query(findComment, [req.params.gifId]);
       if (!comments.rows[0]) {
-        comment = 'No Comments have been added to this article';
+        comment = 'No Comments have been added to this gif';
       } else {
         comment = comments.rows;
       }

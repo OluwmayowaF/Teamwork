@@ -64,7 +64,6 @@ const Helper = {
     return new Promise((resolve, reject) => {
       cloudinary.uploader.destroy(`TeamworkDemo/${image}`, (err, result) => {
         if (err) return reject(err);
-        console.log(result);
         return resolve(result);
       });
     });
