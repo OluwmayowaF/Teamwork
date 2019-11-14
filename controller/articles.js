@@ -76,7 +76,13 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 
@@ -99,7 +105,13 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 
@@ -142,7 +154,13 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 
@@ -238,7 +256,13 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 
@@ -266,14 +290,20 @@ module.exports = {
         data: flag.rows,
       });
     } catch (error) {
-      return res.status(500);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 
   async deleteFlaged(req, res) {
     const findarticle = `SELECT *
     FROM articles
-    WHERE id = $1 AND flags > 1`;
+    WHERE id = $1 AND flags > 0`;
     const deleteArticle = `DELETE FROM 
     articles WHERE id = $1`;
 
@@ -292,7 +322,13 @@ module.exports = {
         },
       });
     } catch (error) {
-      return res.status(500);
+      return res.status(500).json({
+        status: 'error',
+        data: {
+          message: 'Something weent wrong, Please try again',
+        },
+
+      });
     }
   },
 

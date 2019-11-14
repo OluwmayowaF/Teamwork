@@ -20,7 +20,9 @@ const employeeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlh
 const employee2Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIwOSwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.JdA5UMCe-P-3qNWXe6vLDggr5Ti8wXwJtd4et8RsB6s';
 const employee3Token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIxMCwiaWF0IjoxNTczNTc2ODg4LCJleHAiOjE1ODIyMTY4ODgsImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3QzMDAwIn0.W6yaFiJjiCbbNdPG-HLn-ZhDH8IVNRU33fEFhAoYyXk';
 let testid = '';
+let testid2 = '';
 let gifid = '';
+let gifid2 = '';
 
 const { expect } = chai;
 chai.use(chaiHttp);
@@ -400,6 +402,23 @@ describe('Teamwork Restful API tests', () => {
           done();
         });
     });
+    it('Should allow a logged in employee to create an article with the rigth data', (done) => {
+      const article = {
+        title: 'The Great Sails',
+        article: 'The Age of Sail (usually dated as 1571–1862) was a period roughly corresponding to the early modern perioe',
+      };
+      chai
+        .request(app)
+        .post('/api/v1/articles')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .send(article)
+        .end((err, res) => {
+          expect(res).to.not.have.status(400);
+          expect(res.body.status).to.equals('success');
+          testid2 = res.body.data.articleId;
+          done();
+        });
+    });
   });
   describe('Test that signed in employees can edit their articles on the system', () => {
     it('Should not allow anyone one who is not signed in to edit an article', (done) => {
@@ -633,6 +652,21 @@ describe('Teamwork Restful API tests', () => {
           done();
         });
     });
+    it('Should allow a logged in employee to post a gif with the rigth data', (done) => {
+      chai
+        .request(app);
+      request.post('/api/v1/gifs')
+        .field('title', 'redDragon')
+        .attach('image', 'test/tenor.gif')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(201);
+          expect(res.body.status).to.equals('success');
+          expect(res.body.data.message).to.equals('GIF image successfully posted');
+          gifid2 = res.body.data.gifId;
+          done();
+        });
+    });
     it('Should not allow a logged in employee to post a gif without a title', (done) => {
       chai
         .request(app);
@@ -842,6 +876,137 @@ describe('Teamwork Restful API tests', () => {
           expect(res).to.have.status(401);
           expect(res.body.status).to.equals('error');
           expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employee can flag an article as inappropraite', () => {
+    it('Should allow signed in employee flag an article', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/articles/${testid2}/flag`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should ensure article exists before attempting to flag  ', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/articles/${testid}/flag`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/articles/${testid}/flag`)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+  });
+  describe('Test that signed in employee can flag a gif as inappropraite', () => {
+    it('Should allow signed in employee flag a gif', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/gifs/${gifid2}/flag`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should ensure article exists before attempting to flag  ', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/gifs/${gifid}/flag`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/gifs/${gifid2}/flag`)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+  });
+  describe('Test that admin can delete flagged posts', () => {
+    it('Should allow admin delete a flagged gif', (done) => {
+      chai
+        .request(app)
+        .delete(`/api/v1/gifs/${gifid2}/flag`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should allow admin delete a flagged article', (done) => {
+      chai
+        .request(app)
+        .delete(`/api/v1/articles/${testid2}/flag`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should ensure article exists before attempting to delete  ', (done) => {
+      chai
+        .request(app)
+        .delete(`/api/v1/articles/${testid}/flag`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+    it('Should ensure gif exists before attempting to delete  ', (done) => {
+      chai
+        .request(app)
+        .delete(`/api/v1/gifs/${gifid}/flag`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(404);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .patch(`/api/v1/gifs/${gifid2}/flag`)
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible without the admin token', (done) => {
+      chai
+        .request(app)
+        .delete(`/api/v1/gifs/${gifid2}/flag`)
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(403);
+          expect(res.body.error).to.equals('Permission Denied! This Route is reserved for Admin Users Only.');
           done();
         });
     });
