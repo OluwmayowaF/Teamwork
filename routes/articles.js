@@ -27,9 +27,6 @@ module.exports = (router) => {
   router.route('/articles/category/:tag')
     .get(validateToken, controller.getArticlebyTag);
 
-  router.route('/feed')
-    .get(validateToken, controller.getFeed);
-
   router.route('/articles/:articleId/flag')
     .patch(validateToken, controller.flagArticle);
 
