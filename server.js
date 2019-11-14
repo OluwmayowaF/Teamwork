@@ -27,6 +27,12 @@ app.use(fileUpload({
   tempFileDir: '/tmp/',
 }));
 
+app.set('view engine', 'ejs');
+
+app.get('/', (_req, res) => {
+  res.render('pages/index');
+});
+
 app.use('/api/v1', routes(router));
 
 /* app.use('/api/v1', (req, res) => {
