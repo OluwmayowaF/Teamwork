@@ -33,7 +33,6 @@ describe('Teamwork Restful API tests', () => {
     done();
   });
   describe('Test that the admin can create employes on using the post route - /api/v1/auth/create-user', () => {
-
     it('Allows an admin create an Employee with the right credentials', (done) => {
       const user = {
         firstName: 'Test',
@@ -767,11 +766,11 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
-  describe('Test that signed in employee can view his feed all gifs and articles ', () => {
-    it('Should allow signed in employee see thier feed', (done) => {
+  describe('Test that signed in employee can view his feeds all gifs and articles ', () => {
+    it('Should allow signed in employee see thier feeds', (done) => {
       chai
         .request(app)
-        .get('/api/v1/feed')
+        .get('/api/v1/feeds')
         .set('Authorization', `Bearer ${employeeToken}`)
         .end((err, res) => {
           expect(res).to.have.status(200);
@@ -782,7 +781,7 @@ describe('Teamwork Restful API tests', () => {
     it('Should work if user fulfils all requirements ', (done) => {
       chai
         .request(app)
-        .get('/api/v1/feed')
+        .get('/api/v1/feeds')
         .set('Authorization', `Bearer ${employeeToken}`)
         .end((err, res) => {
           expect(res).not.to.have.status(404);
@@ -792,7 +791,7 @@ describe('Teamwork Restful API tests', () => {
     it('Should not be accesible without the bearer token', (done) => {
       chai
         .request(app)
-        .get('/api/v1/feed')
+        .get('/api/v1/feeds')
         .end((err, res) => {
           expect(res).to.have.status(401);
           expect(res.body.error).to.equals('Authorization Token not found');
@@ -802,7 +801,7 @@ describe('Teamwork Restful API tests', () => {
     it('Should not be accesible with a fake bearer token', (done) => {
       chai
         .request(app)
-        .get('/api/v1/feed')
+        .get('/api/v1/feeds')
         .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
         .end((err, res) => {
           expect(res).to.have.status(401);

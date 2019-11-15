@@ -63,7 +63,12 @@ module.exports = {
         status: 'success',
         data: {
           message: 'Article succesfully Updated',
-          article: response.rows[0],
+          ownerId: response.rows[0].ownerId,
+          articleId: response.rows[0].id,
+          createdOn: response.rows[0].created_date,
+          title: response.rows[0].title,
+          article: response.rows[0].article,
+          category: response.rows[0].category,
         },
       });
     } catch (error) {
