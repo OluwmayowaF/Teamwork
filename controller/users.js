@@ -37,7 +37,7 @@ module.exports = {
         status: 'success',
         data: {
           message: 'User account succesfully created',
-          token: beareToken,
+          token: `Bearer ${beareToken}`,
           userId: user.id,
           firstname: user.firstname,
           lastname: user.lastname,
@@ -93,7 +93,7 @@ module.exports = {
         status: 'success',
         data: {
           message: 'Welcome! you have signed in succesfully',
-          token: bearerToken,
+          token: `Bearer ${bearerToken}`,
           userId: rows[0].id,
           firstname: rows[0].firstname,
           lastname: rows[0].lastname,
