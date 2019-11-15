@@ -243,14 +243,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-<<<<<<< HEAD
         error: 'Something weent wrong, Please try again',
-=======
-        data: {
-          message: 'Something went wrong, Please try again',
-        },
-
->>>>>>> ch-improve-maintanability-of-the-code-029
       });
     }
   },
