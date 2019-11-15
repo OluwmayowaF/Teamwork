@@ -32,19 +32,14 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        message: 'Something weent wrong, Please try again',
       });
     }
   },
 
   async editArticle(req, res) {
-    const findArticle = `SELECT * FROM 
-    articles WHERE id = $1 AND ownerId = $2`;
-    const updateArticle = `UPDATE articles
-    SET title = $1, article = $2, tag=$3
+    const findArticle = 'SELECT * FROM articles WHERE id = $1 AND ownerId = $2';
+    const updateArticle = `UPDATE articles SET title = $1, article = $2, tag=$3
     WHERE id = $4 AND ownerId = $5 returning *`;
 
     try {
@@ -78,10 +73,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        message: 'Something went wrong, Please try again',
       });
     }
   },
@@ -129,10 +121,7 @@ module.exports = {
     try {
       const { rows } = await db.query(findArticle, [req.params.articleId]);
       if (!rows[0]) {
-        return res.status(404).json({
-          status: 'error',
-          error: 'Article was not found!',
-        });
+        return res.status(404).json({ status: 'error', error: 'Article was not found!' });
       }
       const values = [req.params.articleId, req.user.id, req.body.comment];
 
@@ -150,10 +139,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        message: 'Something weent wrong, Please try again',
       });
     }
   },
@@ -234,7 +220,6 @@ module.exports = {
       if (!article.rows[0]) {
         return res.status(404).json({ status: 'error', error: 'Article was not found!' });
       }
-
       const flag = await db.query(flagarticle, [req.params.articleId]);
       return res.status(200).json({
         status: 'success',
@@ -250,19 +235,13 @@ module.exports = {
   },
 
   async deleteFlaged(req, res) {
-    const findarticle = `SELECT *
-    FROM articles
-    WHERE id = $1 AND flags > 0`;
-    const deleteArticle = `DELETE FROM 
-    articles WHERE id = $1`;
+    const findarticle = 'SELECT * FROM articles WHERE id = $1 AND flags > 0';
+    const deleteArticle = 'DELETE FROM articles WHERE id = $1';
 
     try {
       const { rows } = await db.query(findarticle, [req.params.articleId]);
       if (!rows[0]) {
-        return res.status(404).json({
-          status: 'error',
-          error: 'Flagged article was not found!',
-        });
+        return res.status(404).json({ status: 'error', error: 'Flagged article was not found!' });
       } await db.query(deleteArticle, [req.params.articleId]);
       return res.status(200).json({
         status: 'success',
@@ -273,10 +252,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        error: 'Something weent wrong, Please try again',
       });
     }
   },

@@ -40,11 +40,9 @@ module.exports = {
   },
 
   async deleteGif(req, res) {
-    const findgif = `SELECT * FROM 
-    gifs WHERE id = $1 AND ownerId = $2 `;
+    const findgif = 'SELECT * FROM gifs WHERE id = $1 AND ownerId = $2 ';
 
-    const deletegif = `DELETE FROM 
-    gifs WHERE id = $1 AND ownerId = $2  returning *`;
+    const deletegif = 'DELETE FROM gifs WHERE id = $1 AND ownerId = $2  returning *';
     const values = [req.params.gifId, req.user.id];
     try {
       const { rows } = await db.query(findgif, values);
@@ -63,7 +61,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: { message: 'Something weent wrong, Please try again' },
+        error: 'Something went wrong, Please try again',
       });
     }
   },
@@ -95,10 +93,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        message: 'Something weent wrong, Please try again',
       });
     }
   },
@@ -130,10 +125,7 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
-        data: {
-          message: 'Something weent wrong, Please try again',
-        },
-
+        message: 'Something weent wrong, Please try again',
       });
     }
   },
@@ -176,12 +168,10 @@ module.exports = {
       } await db.query(deletegif, [req.params.gifId]);
       return res.status(200).json({
         status: 'success',
-        data: {
-          message: 'Gif deleted succesfully',
-        },
+        message: 'Gif deleted succesfully',
       });
     } catch (error) {
-      return res.status(500).json({ status: 'error', message: 'Something weent wrong, Please try again' });
+      return res.status(500).json({ status: 'error', error: 'Something weent wrong, Please try again' });
     }
   },
 
