@@ -106,7 +106,7 @@ describe('Teamwork Restful API tests', () => {
       const user = {
         firstName: 'Test',
         lastName: 'Employee',
-        email: 'unitest@employee.com',
+        email: 'unittest@employee.com',
         password: '12345678',
         gender: 'Male',
         jobRole: 'RegTester',
