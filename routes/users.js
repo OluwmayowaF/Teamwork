@@ -9,9 +9,9 @@ const middleware = require('../middleware/Auth');
 const { validateToken } = middleware;
 
 module.exports = (router) => {
-  router.route('/auth/signin/')
+  router.route('/auth/create-user')
     .post(controller.createUser);
-  router.route('auth/create-user')
+  router.route('/auth/signin')
     .post(controller.login);
   router.route('/auth/user')
     .get(validateToken, controller.getLoggedInUser);
