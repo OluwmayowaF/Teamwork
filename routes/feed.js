@@ -5,6 +5,6 @@ const middleware = require('../middleware/Auth');
 const { validateToken } = middleware;
 
 module.exports = (router) => {
-  router.route('/feed')
+  router.route('/feeds')
     .get(validateToken, controller.getFeed);
 };

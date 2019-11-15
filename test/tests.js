@@ -33,75 +33,7 @@ describe('Teamwork Restful API tests', () => {
     done();
   });
   describe('Test that the admin can create employes on using the post route - /api/v1/auth/create-user', () => {
-  /*  it('Should not  allow a user without the bearer token to create a user', (done) => {
-      const user = {
-        firstName: 'Test',
-        lastName: 'Employee',
-        email: 'unittest@employee.com',
-        password: '12345678',
-        gender: 'Male',
-        jobRole: 'Talent Manager',
-        department: 'A & R',
-        role: 'test',
-        address: 'Lagos',
-      };
-      chai
-        .request(app)
-        .post('/api/v1/auth/create-user')
-        .send(user)
-        .end((err, res) => {
-          expect(res).to.have.status(401);
-          expect(res.body.error).to.equals('Authorization Token not found');
-          done();
-        });
-    });
-    it('Should not  allow a user with an invalid bearer token to create a user', (done) => {
-      const user = {
-        firstName: 'Test',
-        lastName: 'Employee',
-        email: 'unittest@employee.com',
-        password: '12345678',
-        gender: 'Male',
-        jobRole: 'Talent Manager',
-        department: 'A & R',
-        role: 'test',
-        address: 'Lagos',
-      };
-      chai
-        .request(app)
-        .post('/api/v1/auth/create-user')
-        .set('Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC92MVwvbG9naW5cL2FkbWluIiwiaWF0IjoxNTcyMzczMjczLCJleHAiOjE1NzI1ODkyNzMsIm5iZiI6MTU3MjM3MzI3MywianRpIjoiMEhhSUFUU0JWb0Z4Q25XRSIsInN1YiI6NDQsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ.cM6wLgiZWhVrjp0qRGlbebBTgj07CN7O4JwbptH5SyY')
-        .send(user)
-        .end((err, res) => {
-          expect(res).to.have.status(401);
-          expect(res.body.status).to.equals('error');
-          expect(res.body.error).to.equals('Invalid Token');
-          done();
-        });
-    });
-    it('Should not  allow anyone who is not an admin to create a user', (done) => {
-      const user = {
-        firstName: 'Test',
-        lastName: 'Employee',
-        email: 'unittest@employee.com',
-        password: '12345678',
-        gender: 'Male',
-        jobRole: 'Talent Manager',
-        department: 'A & R',
-        address: 'Lagos',
-      };
-      chai
-        .request(app)
-        .post('/api/v1/auth/create-user')
-        .set('Authorization', `Bearer ${employeeToken}`)
-        .send(user)
-        .end((err, res) => {
-          expect(res).to.have.status(403);
-          expect(res.body.error).to.equals('Permission Denied! This Route is reserved for Admin Users Only.');
-          done();
-        });
-    });
-*/
+
     it('Allows an admin create an Employee with the right credentials', (done) => {
       const user = {
         firstName: 'Test',
