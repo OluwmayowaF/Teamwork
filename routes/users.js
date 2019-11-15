@@ -10,7 +10,7 @@ const { validateToken } = middleware;
 
 module.exports = (router) => {
   router.route('/auth/create-user')
-    .post(validateToken, adminRoute, controller.createUser);
+    .post(controller.createUser);
   router.route('/auth/signin')
     .post(controller.login);
   router.route('/auth/user')
