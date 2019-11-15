@@ -40,7 +40,8 @@ module.exports = {
   async editArticle(req, res) {
     const findArticle = 'SELECT * FROM articles WHERE id = $1 AND ownerId = $2';
     const updateArticle = `UPDATE articles SET title = $1, article = $2, tag=$3
-    WHERE id = $4 AND ownerId = $5 returning *`;
+    WHERE id = $4 AND ownerId = $5 returning ownerId, id,created_date as createdOn,
+    title, article, tag as category`;
 
     try {
       const { rows } = await db.query(findArticle, [req.params.articleId, req.user.id]);
@@ -62,12 +63,7 @@ module.exports = {
         status: 'success',
         data: {
           message: 'Article succesfully Updated',
-          ownerId: response.rows[0].ownerId,
-          articleId: response.rows[0].id,
-          createdOn: response.rows[0].created_date,
-          title: response.rows[0].title,
-          article: response.rows[0].article,
-          category: response.rows[0].tag,
+          article: response.rows[0],
         },
       });
     } catch (error) {
@@ -147,13 +143,8 @@ module.exports = {
   async getArticle(req, res) {
     // Return all Articles for a user with comments
 
-    const findArticle = `SELECT 
-    id, created_date, title, article
-    FROM articles
-    WHERE id = $1`;
-    const findComment = `SELECT 
-    id as commentId, comment, ownerId as authorId
-    FROM
+    const findArticle = 'SELECT id, created_date, title, article FROM articles WHERE id = $1';
+    const findComment = `SELECT id as commentId, comment, ownerId as authorId FROM
     articles_comments WHERE articleId= $1`;
     let comment = {};
 
@@ -205,7 +196,7 @@ module.exports = {
       return res.status(500).json({
         status: 'error',
         data: {
-          message: 'Something weent wrong, Please try again',
+          message: 'Something went wrong, Please try again',
         },
 
       });
@@ -252,7 +243,14 @@ module.exports = {
     } catch (error) {
       return res.status(500).json({
         status: 'error',
+<<<<<<< HEAD
         error: 'Something weent wrong, Please try again',
+=======
+        data: {
+          message: 'Something went wrong, Please try again',
+        },
+
+>>>>>>> ch-improve-maintanability-of-the-code-029
       });
     }
   },
