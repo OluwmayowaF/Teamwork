@@ -119,6 +119,7 @@ module.exports = {
           createdOn: rows[0].created_date,
           title: rows[0].title,
           url: rows[0].imageurl,
+          ownerid: rows[0].ownerid,
           comments: comment,
         },
       });
