@@ -47,7 +47,7 @@ describe('Teamwork Restful API tests', () => {
       chai
         .request(app)
         .post('/api/v1/auth/create-user')
-        // .set('Authorization', `Bearer ${adminToken}`)
+        .set('Authorization', `Bearer ${adminToken}`)
         .send(user)
         .end((err, res) => {
           expect(res).to.have.status(201);

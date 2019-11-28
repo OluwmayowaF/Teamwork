@@ -76,12 +76,7 @@ module.exports = {
 
     try {
       const { rows } = await db.query(text, email);
-      if (!rows[0]) {
-        return res.status(404).json({
-          status: 'error',
-          error: 'Invalid Credentials',
-        });
-      } if (!Helper.comparePassword(rows[0].password, req.body.password)) {
+      if (!rows[0] || !Helper.comparePassword(rows[0].password, req.body.password)) {
         return res.status(404).json({
           status: 'error',
           error: 'Invalid Credentials',
