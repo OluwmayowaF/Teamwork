@@ -135,6 +135,9 @@ module.exports = {
           articleTitle: rows[0].title,
           article: rows[0].article,
           comment: comment.rows[0].comment,
+          commentid: comment.rows[0].id,
+          commentAuthor: req.user.firstname,
+
         },
       });
     } catch (error) {
@@ -148,7 +151,7 @@ module.exports = {
   async getArticle(req, res) {
     // Return all Articles for a user with comments
 
-    const findArticle = 'SELECT id, created_date, title, article FROM articles WHERE id = $1';
+    const findArticle = 'SELECT * FROM articles WHERE id = $1';
     const findComment = `SELECT id as commentId, comment, ownerId as authorId FROM
     articles_comments WHERE articleId= $1`;
     let comment = {};
@@ -172,6 +175,8 @@ module.exports = {
         createdOn: rows[0].created_date,
         title: rows[0].title,
         article: rows[0].article,
+        ownerid: rows[0].ownerid,
+        category: rows[0].tag,
         comments: comment,
       },
     });
