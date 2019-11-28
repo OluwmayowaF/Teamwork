@@ -26,7 +26,7 @@ app.use(fileUpload({
   useTempFiles: true,
   tempFileDir: '/tmp/',
 }));
-
+app.use(express.limit('4M'));
 app.set('view engine', 'ejs');
 
 app.get('/', (_req, res) => {
