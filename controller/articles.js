@@ -150,6 +150,7 @@ module.exports = {
 
   async getArticle(req, res) {
     // Return all Articles for a user with comments
+    const getAuthor = 'SELECT * FROM users WHERE id = $1';
 
     const findArticle = 'SELECT * FROM articles WHERE id = $1';
     const findComment = `SELECT id as commentId, comment, ownerId as authorId FROM
@@ -157,17 +158,19 @@ module.exports = {
     let comment = {};
 
     // try {
+    
     const { rows } = await db.query(findArticle, [req.params.articleId]);
     if (!rows[0]) {
       return res.status(404).send({ status: 'error', error: 'That article no longer exists' });
     }
+    
     const comments = await db.query(findComment, [req.params.articleId]);
     if (!comments.rows[0]) {
       comment = 'No Comments have been added to this article';
     } else {
       comment = comments.rows;
     }
-
+    const user = await db.query(getAuthor, [rows[0].ownerid]);
     return res.status(200).json({
       status: 'success',
       data: {
@@ -176,6 +179,7 @@ module.exports = {
         title: rows[0].title,
         article: rows[0].article,
         ownerid: rows[0].ownerid,
+        ownername: `${user.rows[0].firstname} ${user.rows[0].lastname}`,
         category: rows[0].tag,
         comments: comment,
       },

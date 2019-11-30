@@ -15,4 +15,6 @@ module.exports = (router) => {
     .post(controller.login);
   router.route('/auth/user')
     .get(validateToken, controller.getLoggedInUser);
+  router.route('/auth/user/:userid')
+    .get(validateToken, controller.getAUser);
 };

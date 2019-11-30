@@ -7,4 +7,6 @@ const { validateToken } = middleware;
 module.exports = (router) => {
   router.route('/feeds')
     .get(validateToken, controller.getFeed);
+  router.route('/userfeeds')
+    .get(validateToken, controller.getUserFeed);
 };

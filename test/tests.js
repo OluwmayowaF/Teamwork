@@ -811,6 +811,51 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+  describe('Test that signed in employee can view his feeds all gifs and articles ', () => {
+    it('Should allow signed in employee see thier feeds', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/userfeeds')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should work if user fulfils all requirements ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/userfeeds')
+        .set('Authorization', `Bearer ${employeeToken}`)
+        .end((err, res) => {
+          expect(res).not.to.have.status(404);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/userfeeds')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible with a fake bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/userfeeds')
+        .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
+  });
   describe('Test that signed in employee can flag an article as inappropraite', () => {
     it('Should allow signed in employee flag an article', (done) => {
       chai

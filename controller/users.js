@@ -94,6 +94,7 @@ module.exports = {
           lastname: rows[0].lastname,
           email: rows[0].email,
           department: rows[0].department,
+          role: rows[0].role,
         },
       });
     } catch (error) {
@@ -113,6 +114,22 @@ module.exports = {
         lastname: rows[0].lastname,
         email: rows[0].email,
         department: rows[0].department,
+        role: rows[0].role,
+      },
+    });
+  },
+  async getAUser(req, res) {
+    const text = 'SELECT * FROM users WHERE id = $1';
+    const { rows } = await db.query(text, [req.params.userid]);
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        userId: rows[0].id,
+        firstname: rows[0].firstname,
+        lastname: rows[0].lastname,
+        email: rows[0].email,
+        department: rows[0].department,
+        role: rows[0].role,
       },
     });
   },
