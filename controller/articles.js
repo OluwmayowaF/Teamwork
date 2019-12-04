@@ -153,8 +153,13 @@ module.exports = {
     const getAuthor = 'SELECT * FROM users WHERE id = $1';
 
     const findArticle = 'SELECT * FROM articles WHERE id = $1';
-    const findComment = `SELECT id as commentId, comment, ownerId as authorId FROM
-    articles_comments WHERE articleId= $1`;
+    // const findComment = `SELECT id as commentId, comment, ownerId as authorId, created_date as date FROM
+    // articles_comments WHERE articleId= $1`;
+   const findComment = `SELECT firstname, lastname, comment, ownerId as authorId, A.created_date as comment_date
+   FROM users U  RIGHT JOIN articles_comments A 
+   ON A.ownerid = U.id
+   WHERE A.articleId = $1`;
+   
     let comment = {};
 
     // try {
