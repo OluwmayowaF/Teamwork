@@ -99,10 +99,13 @@ module.exports = {
   },
 
   async getGif(req, res) {
+    const getAuthor = 'SELECT * FROM users WHERE id = $1';
     let comment = {};
     const findGif = 'SELECT * FROM gifs WHERE id = $1';
-    const findComment = `SELECT  id as commentId, comment, ownerId as authorId
-    FROM gifs_comments WHERE gifId= $1`;
+    const findComment = `SELECT firstname, lastname, comment, ownerId as authorId, A.created_date as comment_date
+    FROM users U  RIGHT JOIN articles_comments A 
+    ON A.ownerid = U.id
+    WHERE A.articleId = $1`;
     try {
       const { rows } = await db.query(findGif, [req.params.gifId]);
       if (!rows[0]) {
@@ -112,6 +115,7 @@ module.exports = {
       if (!comments.rows[0]) {
         comment = 'No Comments have been added to this gif';
       } else { comment = comments.rows; }
+      const user = await db.query(getAuthor, [rows[0].ownerid]);
       return res.status(200).json({
         status: 'success',
         data: {
@@ -120,6 +124,7 @@ module.exports = {
           title: rows[0].title,
           url: rows[0].imageurl,
           ownerid: rows[0].ownerid,
+          ownername: `${user.rows[0].firstname} ${user.rows[0].lastname}`,
           comments: comment,
         },
       });
