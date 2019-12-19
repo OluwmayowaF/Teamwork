@@ -103,9 +103,9 @@ module.exports = {
     let comment = {};
     const findGif = 'SELECT * FROM gifs WHERE id = $1';
     const findComment = `SELECT firstname, lastname, comment, ownerId as authorId, A.created_date as comment_date
-    FROM users U  RIGHT JOIN articles_comments A 
+    FROM users U  RIGHT JOIN gifs_comments A 
     ON A.ownerid = U.id
-    WHERE A.articleId = $1`;
+    WHERE A.gifId = $1`;
     try {
       const { rows } = await db.query(findGif, [req.params.gifId]);
       if (!rows[0]) {
