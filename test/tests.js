@@ -266,6 +266,51 @@ describe('Teamwork Restful API tests', () => {
         });
     });
   });
+  describe('Test that signed in Admin can view all Users ', () => {
+    it('Should allow signed in employee see their details ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/users')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          expect(res).to.have.status(200);
+          expect(res.body.status).to.equals('success');
+          done();
+        });
+    });
+    it('Should work if user fulfils all requirements ', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/users')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .end((err, res) => {
+          expect(res).not.to.have.status(400);
+          done();
+        });
+    });
+    it('Should not be accesible without the bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/users')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.error).to.equals('Authorization Token not found');
+          done();
+        });
+    });
+    it('Should not be accesible without a fake token bearer token', (done) => {
+      chai
+        .request(app)
+        .get('/api/v1/auth/users')
+        .set('Authorization', 'Bearer gtgvgvdgvytbghgs-ytghygvyfvygdbfhhhfhhhfhhf-ffffffffffhfbyufg123536y474-gydybdygtu')
+        .end((err, res) => {
+          expect(res).to.have.status(401);
+          expect(res.body.status).to.equals('error');
+          expect(res.body.error).to.equals('Invalid Token');
+          done();
+        });
+    });
+  });
   describe('Test that signed in employees can create articles on the system', () => {
     it('Should not allow anyone one who is not signed in to create an article', (done) => {
       const article = {

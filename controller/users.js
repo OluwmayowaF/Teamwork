@@ -134,5 +134,14 @@ module.exports = {
     });
   },
 
+  async getAllUser(req, res) {
+    const text = 'SELECT * FROM users';
+    const { rows } = await db.query(text);
+    return res.status(200).json({
+      status: 'success',
+      rows,
+    });
+  },
+
 
 };
